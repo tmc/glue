@@ -24,7 +24,7 @@ type Router struct {
 
 // Add registers a pattern with a handler for the given request method.
 func (r *Router) Add(meth, pat string, h Handler) *mux.Route {
-	return r.NewRoute().PathPrefix(pat).Handler(RouteHandler{Handler: h}).Methods(meth)
+	return r.NewRoute().PathPrefix(pat).Handler(routeHandler{Handler: h}).Methods(meth)
 }
 
 // Delete registers a pattern with a handler for DELETE requests.
@@ -57,7 +57,7 @@ func (r *Router) Handle(w http.ResponseWriter, req *http.Request, c Context) {
 	var match mux.RouteMatch
 	var handler http.Handler
 	if matched := r.Match(req, &match); matched {
-		if rhandler, ok := match.Handler.(RouteHandler); ok {
+		if rhandler, ok := match.Handler.(routeHandler); ok {
 			rhandler.ctx = c
 			handler = rhandler
 		}
@@ -69,7 +69,7 @@ func (r *Router) Handle(w http.ResponseWriter, req *http.Request, c Context) {
 		if r.NotFoundHandler == nil {
 			handler = http.NotFoundHandler()
 		} else {
-			handler = RouteHandler{r.NotFoundHandler, c}
+			handler = routeHandler{r.NotFoundHandler, c}
 		}
 	}
 	handler.ServeHTTP(w, req)
@@ -108,12 +108,12 @@ func cleanPath(p string) string {
 	return np
 }
 
-type RouteHandler struct {
+type routeHandler struct {
 	Handler
 	ctx Context
 }
 
-func (rh RouteHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (rh routeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vals, err := rh.ctx.Call(rh.Handler)
 	if err != nil {
 		panic(err)
