@@ -1,0 +1,35 @@
+package glue_test
+
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/tmc/glue"
+	"github.com/tmc/glue/loggers"
+)
+
+func ExampleGlue_Listen() {
+	g := glue.New()
+	g.Add(loggers.NewApacheLogger())
+
+	g.Get("/{type}_teapot", func(r *http.Request) (int, string) {
+		return http.StatusTeapot, r.URL.Query().Get(":type") + "!"
+	})
+
+	g.Get("/", func() string {
+		return "hello world"
+	})
+
+	go g.Listen()
+
+	resp, err := http.Get("http://127.0.0.1:5000/purple_teapot")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println(resp.Status, string(body))
+	// Output:
+	// 418 I'm a teapot purple!
+}
