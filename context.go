@@ -7,15 +7,13 @@ import (
 )
 
 type Context struct {
-	*Glue
 	inj.Injector
+	*Glue
 	rw *ResponseWriter
 }
 
 func (g *Glue) newContext(w http.ResponseWriter, r *http.Request) *Context {
-	ctx := &Context{g,
-		inj.New(),
-		NewResponseWriter(w)}
+	ctx := &Context{inj.New(), g, NewResponseWriter(w)}
 
 	ctx.Register(r)
 	// register our ResponseWriter as an http.ResponseWriter or net/http HandlerFunc compatibility
