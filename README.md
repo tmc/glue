@@ -148,3 +148,43 @@ type ResponseHandler func(http.ResponseWriter, []reflect.Value)
 ```
 ResponseHandler is a type that writes an HTTP response given a slice of reflect.Value
 
+## type ResponseWriter
+``` go
+type ResponseWriter struct {
+    http.ResponseWriter
+    Size   int // the number of bytes that have been written as a response body
+    Status int // the status code that has been written to the response (or zero if unwritten)
+}
+```
+ResponseWriter is an augmented http.ResponseWriter that exposes some additional fields
+
+
+### func (\*ResponseWriter) Write
+``` go
+func (rw *ResponseWriter) Write(b []byte) (int, error)
+```
+Write writes the data to the connection as part of an HTTP reply.
+If WriteHeader has not yet been called, Write calls WriteHeader(http.StatusOK)
+before writing the data.  If the Header does not contain a
+Content-Type line, Write adds a Content-Type set to the result of passing
+the initial 512 bytes of written data to DetectContentType.
+
+
+
+### func (\*ResponseWriter) WriteHeader
+``` go
+func (rw *ResponseWriter) WriteHeader(status int)
+```
+WriteHeader sends an HTTP response header with status code.
+If WriteHeader is not called explicitly, the first call to Write
+will trigger an implicit WriteHeader(http.StatusOK).
+Thus explicit calls to WriteHeader are mainly used to
+send error codes.
+
+
+
+### func (\*ResponseWriter) WroteHeader
+``` go
+func (rw *ResponseWriter) WroteHeader() bool
+```
+WroteHeader indicates if a header has been written (and a response has been started)

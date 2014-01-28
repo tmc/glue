@@ -14,7 +14,7 @@ import (
 type Context struct {
 	inj.Injector
 	g  *Glue
-	rw *responseWriter
+	rw *ResponseWriter
 }
 
 // newContext creates a new Context and registers a few basic instances
@@ -22,7 +22,9 @@ func (g *Glue) newContext(w http.ResponseWriter, r *http.Request) *Context {
 	ctx := &Context{inj.New(), g, newResponseWriter(w)}
 
 	ctx.Register(r)
-	// register our ResponseWriter as an http.ResponseWriter or net/http HandlerFunc compatibility
+	ctx.Register(ctx.rw)
+    // register our ResponseWriter as an http.ResponseWriter as well for
+    // net/http HandlerFunc compatibility
 	ctx.RegisterAs(ctx.rw, (*http.ResponseWriter)(nil))
 	// register this instance with itself
 	ctx.Register(*ctx)

@@ -5,22 +5,22 @@ import (
 	"reflect"
 )
 
-// responseWriter is an augmented http.ResponseWriter that exposes some additional fields
-type responseWriter struct {
+// ResponseWriter is an augmented http.ResponseWriter that exposes some additional fields
+type ResponseWriter struct {
 	http.ResponseWriter
 	Size   int // the number of bytes that have been written as a response body
 	Status int // the status code that has been written to the response (or zero if unwritten)
 }
 
-// newResponseWriter creates a new responseWriter given an http.ResponseWriter
-func newResponseWriter(rw http.ResponseWriter) *responseWriter {
-	return &responseWriter{
+// newResponseWriter creates a new ResponseWriter given an http.ResponseWriter
+func newResponseWriter(rw http.ResponseWriter) *ResponseWriter {
+	return &ResponseWriter{
 		ResponseWriter: rw,
 	}
 }
 
 // WroteHeader indicates if a header has been written (and a response has been started)
-func (rw *responseWriter) WroteHeader() bool {
+func (rw *ResponseWriter) WroteHeader() bool {
 	return rw.Status != 0
 }
 
@@ -29,7 +29,7 @@ func (rw *responseWriter) WroteHeader() bool {
 // before writing the data.  If the Header does not contain a
 // Content-Type line, Write adds a Content-Type set to the result of passing
 // the initial 512 bytes of written data to DetectContentType.
-func (rw *responseWriter) Write(b []byte) (int, error) {
+func (rw *ResponseWriter) Write(b []byte) (int, error) {
 	if !rw.WroteHeader() {
 		rw.WriteHeader(http.StatusOK)
 	}
@@ -43,7 +43,7 @@ func (rw *responseWriter) Write(b []byte) (int, error) {
 // will trigger an implicit WriteHeader(http.StatusOK).
 // Thus explicit calls to WriteHeader are mainly used to
 // send error codes.
-func (rw *responseWriter) WriteHeader(status int) {
+func (rw *ResponseWriter) WriteHeader(status int) {
 	rw.ResponseWriter.WriteHeader(status)
 	rw.Status = status
 }
