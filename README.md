@@ -25,7 +25,7 @@ Example:
 	g.Get("/", http.FileServer(http.Dir("./public/")))
 	go g.Listen()
 	
-	resp, err := http.Get("http://127.0.0.1:5000/purple_teapot"")
+	resp, err := http.Get("http://127.0.0.1:5000/purple_teapot")
 	if err != nil {
 	    panic(err)
 	}
