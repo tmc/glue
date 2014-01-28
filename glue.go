@@ -50,7 +50,7 @@ func (g *Glue) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // Add adds a handler to the default set of handlers for a Glue instance
-func (g *Glue) Add(handler Handler) {
+func (g *Glue) AddHandler(handler Handler) {
 	//@todo verify is func
 	g.handlers = append(g.handlers, handler)
 }
