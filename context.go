@@ -23,8 +23,8 @@ func (g *Glue) newContext(w http.ResponseWriter, r *http.Request) *Context {
 
 	ctx.Register(r)
 	ctx.Register(ctx.rw)
-    // register our ResponseWriter as an http.ResponseWriter as well for
-    // net/http HandlerFunc compatibility
+	// register our ResponseWriter as an http.ResponseWriter as well for
+	// net/http HandlerFunc compatibility
 	ctx.RegisterAs(ctx.rw, (*http.ResponseWriter)(nil))
 	// register this instance with itself
 	ctx.Register(*ctx)
@@ -35,14 +35,16 @@ func (g *Glue) newContext(w http.ResponseWriter, r *http.Request) *Context {
 // ignored but errors panic. If a handler begins writing a response further handlers
 // are not executed.
 func (ctx *Context) handle() {
-	for _, h := range append(ctx.g.handlers, ctx.g.defaultHandler) {
+	handlers := append(ctx.g.handlers, ctx.g.defaultHandler)
+	for _, h := range handlers {
 		vals, err := ctx.Call(h, ctx.g.Injector)
 
 		// If a Handler returns values, and if the first value is a glue.AfterHandler
 		// defer it to allow post-request logic
 		if len(vals) > 0 {
 			if vals[0].Type() == reflect.TypeOf(AfterHandler(nil)) {
-				defer vals[0].Call([]reflect.Value{reflect.ValueOf(*ctx)})
+                afterFn := vals[0].Interface().(AfterHandler)
+				defer afterFn(*ctx)
 			} else if len(vals) == 1 {
 				log.Printf("glue: middleware didn't return a %T. It is instead of type: %+v\n", AfterHandler(nil), vals[0].Type())
 			} else {
