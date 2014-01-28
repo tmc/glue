@@ -13,11 +13,28 @@ godoc: http://godoc.org/github.com/tmc/glue
 
 Features
 
-- small (~250LOC)
-- compatible with the net/http Handler and HandleFunc interfaces.
-- provides mechanism for before and after request middleware
+	* small (~250LOC)
+	* compatible with the net/http Handler and HandleFunc interfaces.
+	* provides mechanism for before and after request middleware
 
-Example:
+
+Basic Example:
+
+
+```go
+	package main
+	import "github.com/tmc/glue"
+	
+	func main() {
+	    g := glue.New()
+	    g.Get("/", func() string {
+	        return "hello world"
+	    })
+	    g.Listen() // listens on :5000 by default (uses PORT environtment variable)
+	}
+```
+
+Example showing middleware, logging, routing, and static file serving:
 
 ```go
 	g := glue.New()
@@ -27,7 +44,7 @@ Example:
 	    return http.StatusTeapot, "that is " + r.URL.Query().Get(":type") + "!"
 	})
 	g.Get("/", http.FileServer(http.Dir("./public/")))
-	go g.Listen()
+	go g.Listen() // listens on 5000 by default (uses PORT environtment variable)
 	
 	resp, err := http.Get("http://127.0.0.1:5000/purple_teapot")
 	if err != nil {
