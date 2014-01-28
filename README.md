@@ -3,14 +3,21 @@
 
 Package glue provides a simple interface to writing HTTP services in Go
 
-- compatible the net/http Handler and HandleFunc interfaces.
+It aims to be small and as simple as possible while exposing a pleasant API.
+
+godoc: http://godoc.org/github.com/tmc/glue
+
+Features
+
+- small (~250LOC)
+- compatible with the net/http Handler and HandleFunc interfaces.
 - provides mechanism for before and after request middleware
 
 Example:
 
 ```go
 	g := glue.New()
-	g.Register(log.New(os.Stdout, "[glue example]", log.LstdFlags))
+	g.Register(log.New(os.Stdout, "[glue example] ", log.LstdFlags))
 	g.Add(loggers.NewApacheLogger())
 	g.Get("/{type}_teapot", func(r *http.Request) (int, string) {
 	    return http.StatusTeapot, "that is " + r.URL.Query().Get(":type") + "!"

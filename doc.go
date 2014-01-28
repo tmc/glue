@@ -3,7 +3,7 @@
 //
 // Example:
 //  g := glue.New()
-//  g.Register(log.New(os.Stdout, "[glue example]", log.LstdFlags))
+//  g.Register(log.New(os.Stdout, "[glue example] ", log.LstdFlags))
 //  g.Add(loggers.NewApacheLogger())
 //  g.Get("/{type}_teapot", func(r *http.Request) (int, string) {
 //      return http.StatusTeapot, "that is " + r.URL.Query().Get(":type") + "!"
