@@ -15,6 +15,11 @@ import (
 //
 // Accepting a glue.Context allows you to inspect the DI container and examine
 // the currently registered types.
+//
+// The default registered ResponseHandler expects Handlers to return either one or two values.
+//
+// If one value, it should return a string or a byte slice.
+// If two values, the first should be an int which will be used as the return code.
 type Handler interface{}
 
 // AfterHandler is a type that a glue Handler can return and have it invoked
