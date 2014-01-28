@@ -126,7 +126,7 @@ type routeHandler struct {
 }
 
 func (rh routeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	vals, err := rh.ctx.Call(rh.Handler)
+	vals, err := rh.ctx.Call(rh.Handler, rh.ctx.g.Injector)
 	if err != nil {
 		panic(err)
 	}
