@@ -1,6 +1,19 @@
 // Package glue provides a simple interface to writing HTTP services in Go
 //
-//
+// It aims to be small and as simple as possible while exposing a pleasant API.
+// 
+// Glue uses reflection and dependency injection to provide a flexible API for your
+// HTTP endpoints. There is an obvious tradeoff here. The cost of this flexibility
+// is some static safety and some performance overhead.
+// 
+// godoc: http://godoc.org/github.com/tmc/glue
+// 
+// Features:
+// 
+//  * small (~250LOC)
+//  * compatible with the net/http Handler and HandleFunc interfaces.
+//  * provides mechanism for before and after request middleware
+// 
 // Example:
 //  g := glue.New()
 //  g.Register(log.New(os.Stdout, "[glue example] ", log.LstdFlags))
