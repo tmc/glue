@@ -27,39 +27,43 @@ Basic Example:
 
 
 ```go
-	package main
-	import "github.com/tmc/glue"
-	
-	func main() {
-	    g := glue.New()
-	    g.Get("/", func() string {
-	        return "hello world"
-	    })
-	    g.Listen() // listens on :5000 by default (uses PORT environtment variable)
-	}
+package main
+import "github.com/tmc/glue"
+
+func main() {
+    g := glue.New()
+    g.Get("/", func() string {
+        return "hello world"
+    })
+    g.Listen() // listens on :5000 by default (uses PORT environtment variable)
+}
 ```
 
 Example showing middleware, logging, routing, and static file serving:
 
 ```go
-	g := glue.New()
-	g.Register(log.New(os.Stdout, "[glue example] ", log.LstdFlags))
-	g.AddHandler(loggers.NewApacheLogger())
-	g.Get("/{type}_teapot", func(r *http.Request) (int, string) {
-	    return http.StatusTeapot, "that is " + r.URL.Query().Get(":type") + "!"
-	})
-	g.Get("/", http.FileServer(http.Dir("./public/")))
-	go g.Listen() // listens on 5000 by default (uses PORT environtment variable)
-	
-	resp, err := http.Get("http://127.0.0.1:5000/purple_teapot")
-	if err != nil {
-	    panic(err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(resp.Status, string(body))
-	// Output:
-	// 418 I'm a teapot that is purple!
+g := glue.New()
+// Register a new type with the underlying DI container
+g.Register(log.New(os.Stderr, "[glue example] ", log.LstdFlags))
+// Add a new glue.Handler that will be invoked for each request
+g.AddHandler(loggers.NewApacheLogger())
+// Add a handler using routing and parameter capture
+g.Get("/{type}_teapot", func(r *http.Request) (int, string) {
+    return http.StatusTeapot, "that is " + r.URL.Query().Get(":type") + "!"
+})
+// Serve static files
+g.Get("/", http.FileServer(http.Dir("./static/")))
+go g.Listen() // listens on 5000 by default (uses PORT environtment variable)
+
+resp, err := http.Get("http://127.0.0.1:5000/purple_teapot")
+if err != nil {
+    panic(err)
+}
+defer resp.Body.Close()
+body, err := ioutil.ReadAll(resp.Body)
+fmt.Println(resp.Status, string(body))
+// Output:
+// 418 I'm a teapot that is purple!
 ```
 
 
