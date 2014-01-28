@@ -5,6 +5,10 @@ Package glue provides a simple interface to writing HTTP services in Go
 
 It aims to be small and as simple as possible while exposing a pleasant API.
 
+Glue uses reflection and dependency injection to provide a flexible API for your
+HTTP endpoints. There is an obvious tradeoff here. The cost of this flexibility
+is some static safety and some performance overhead.
+
 godoc: http://godoc.org/github.com/tmc/glue
 
 Features
@@ -147,6 +151,12 @@ It is invoked with the Call method of inj.Injector (http://godoc.org/github.com/
 
 Accepting a glue.Context allows you to inspect the DI container and examine
 the currently registered types.
+
+The default registered ResponseHandler expects Handlers to return either one or two values.
+
+If one value, it should return a string or a byte slice.
+If two values, the first should be an int which will be used as the return code.
+
 
 
 ## type ResponseHandler
