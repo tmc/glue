@@ -12,9 +12,9 @@ negligible in benchmarking).
 
 Contributions welcome!
 
-godoc: http://godoc.org/github.com/tmc/glue
-license: ISC
-status: *api-instable!*
+- godoc: http://godoc.org/github.com/tmc/glue
+- license: ISC
+- status: *api-instable!*
 
 Features
 
