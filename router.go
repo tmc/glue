@@ -7,47 +7,59 @@ import (
 	"net/url"
 	"path"
 	"strings"
+
 	"github.com/gorilla/mux"
 )
 
-func NewRouter() *Router {
-	return &Router{}
+// newRouter prepares a new router
+func newRouter() *router {
+	return &router{}
 }
 
-// Router is a request router that implements a pat-like API.
+// router is a request router that implements a pat-like API.
 //
 // pat docs: http://godoc.org/github.com/bmizerany/pat
-type Router struct {
+type router struct {
 	mux.Router
 	NotFoundHandler Handler
 }
 
 // Add registers a pattern with a handler for the given request method.
-func (r *Router) Add(meth, pat string, h Handler) *mux.Route {
-	return r.NewRoute().PathPrefix(pat).Handler(routeHandler{Handler: h}).Methods(meth)
+func (r *router) Add(meth, pat string, h Handler) *mux.Route {
+
+	// if not already an http.Handler, wrap it as a routeHandler
+	if _, ok := h.(http.Handler); !ok {
+		h = routeHandler{Handler: h}
+	}
+
+	return r.NewRoute().PathPrefix(pat).Handler(h.(http.Handler)).Methods(meth)
 }
 
 // Delete registers a pattern with a handler for DELETE requests.
-func (r *Router) Delete(pat string, h Handler) *mux.Route {
+func (r *router) Delete(pat string, h Handler) *mux.Route {
 	return r.Add("DELETE", pat, h)
 }
 
 // Get registers a pattern with a handler for GET requests.
-func (r *Router) Get(pat string, h Handler) *mux.Route {
+func (r *router) Get(pat string, h Handler) *mux.Route {
 	return r.Add("GET", pat, h)
 }
 
 // Post registers a pattern with a handler for POST requests.
-func (r *Router) Post(pat string, h Handler) *mux.Route {
+func (r *router) Post(pat string, h Handler) *mux.Route {
 	return r.Add("POST", pat, h)
 }
 
 // Put registers a pattern with a handler for PUT requests.
-func (r *Router) Put(pat string, h Handler) *mux.Route {
+func (r *router) Put(pat string, h Handler) *mux.Route {
 	return r.Add("PUT", pat, h)
 }
 
-func (r *Router) Handle(w http.ResponseWriter, req *http.Request, c Context) {
+// Handle is a glue.Handler that does route matching and invokes the registered
+// glue.Handler for a route.
+//
+// If a route is not found the NotFoundHandler is invoked.
+func (r *router) Handle(w http.ResponseWriter, req *http.Request, c Context) {
 	// Clean path to canonical form and redirect.
 	if p := cleanPath(req.URL.Path); p != req.URL.Path {
 		w.Header().Set("Location", p)
@@ -122,7 +134,7 @@ func (rh routeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(vals) > 0 {
 		_, err := rh.ctx.Call(func(rw http.ResponseWriter, rHandler ResponseHandler) {
 			rHandler(rw, vals)
-		}, rh.ctx.Glue.Injector)
+		}, rh.ctx.g.Injector)
 		if err != nil {
 			panic(err)
 		}
