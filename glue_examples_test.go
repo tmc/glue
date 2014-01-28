@@ -14,7 +14,7 @@ import (
 	"github.com/tmc/glue/loggers"
 )
 
-// Exapmle showing the use of Listen, routing, logging and static file serving
+// Example showing the use of Listen, routing, logging and static file serving
 func ExampleGlue_Listen() {
 	g := glue.New()
 	g.Register(log.New(os.Stderr, "[glue example] ", log.LstdFlags))
