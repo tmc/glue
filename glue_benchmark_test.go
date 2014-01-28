@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/tmc/glue"
 )
@@ -16,7 +17,7 @@ func init() {
 	})
 
 	http.HandleFunc("/b", func(rw http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(rw, "b")
+		fmt.Fprint(rw, "b")
 	})
 
 	http.Handle("/a", g)
@@ -25,6 +26,7 @@ func init() {
 
 func BenchmarkGlueIO(b *testing.B) {
 	for i := 0; i < b.N; i++ {
+		time.Sleep(200 * time.Millisecond)
 		resp, _ := http.Get("http://127.0.0.1:6001/a")
 		ioutil.ReadAll(resp.Body)
 	}
@@ -32,6 +34,7 @@ func BenchmarkGlueIO(b *testing.B) {
 
 func BenchmarkHttpIO(b *testing.B) {
 	for i := 0; i < b.N; i++ {
+		time.Sleep(200 * time.Millisecond)
 		resp, _ := http.Get("http://127.0.0.1:6001/b")
 		ioutil.ReadAll(resp.Body)
 	}
@@ -39,12 +42,14 @@ func BenchmarkHttpIO(b *testing.B) {
 
 func BenchmarkHttp(b *testing.B) {
 	for i := 0; i < b.N; i++ {
+		time.Sleep(200 * time.Millisecond)
 		http.Get("http://127.0.0.1:6001/b")
 	}
 }
 
 func BenchmarkGlue(b *testing.B) {
 	for i := 0; i < b.N; i++ {
+		time.Sleep(200 * time.Millisecond)
 		http.Get("http://127.0.0.1:6001/a")
 	}
 }
