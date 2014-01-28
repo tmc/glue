@@ -18,7 +18,7 @@ import (
 func ExampleGlue_Listen() {
 	g := glue.New()
 	g.Register(log.New(os.Stderr, "[glue example] ", log.LstdFlags))
-	g.Add(loggers.NewApacheLogger())
+	g.AddHandler(loggers.NewApacheLogger())
 	g.Get("/{type}_teapot", func(r *http.Request) (int, string) {
 		return http.StatusTeapot, "that is " + r.URL.Query().Get(":type") + "!"
 	})
