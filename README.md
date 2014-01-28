@@ -7,7 +7,10 @@ It aims to be small and as simple as possible while exposing a pleasant API.
 
 Glue uses reflection and dependency injection to provide a flexible API for your
 HTTP endpoints. There is an obvious tradeoff here. The cost of this flexibility
-is some static safety and some performance overhead.
+is some static safety and some performance overhead (though this appears
+negligible in benchmarking).
+
+Contributions welcome!
 
 godoc: http://godoc.org/github.com/tmc/glue
 
