@@ -26,7 +26,7 @@ func main() {
 	g.Register(db)
 	g.Get("/div/{n}", func(r *http.Request) string {
 		n, _ := strconv.Atoi(r.URL.Query().Get(":n"))
-		return fmt.Sprint(1.0/n)
+		return fmt.Sprint(1.0 / n)
 	})
 
 	go g.Listen()

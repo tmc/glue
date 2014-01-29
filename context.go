@@ -43,7 +43,7 @@ func (ctx *Context) handle() {
 		// defer it to allow post-request logic
 		if len(vals) > 0 {
 			if vals[0].Type() == reflect.TypeOf(AfterHandler(nil)) {
-                afterFn := vals[0].Interface().(AfterHandler)
+				afterFn := vals[0].Interface().(AfterHandler)
 				defer afterFn(*ctx)
 			} else if len(vals) == 1 {
 				log.Printf("glue: middleware didn't return a %T. It is instead of type: %+v\n", AfterHandler(nil), vals[0].Type())
