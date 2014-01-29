@@ -1,6 +1,8 @@
 # glue
     import "github.com/tmc/glue"
 
+[![Build Status](https://drone.io/github.com/tmc/glue/status.png)](https://drone.io/github.com/tmc/glue/latest)
+
 Package glue provides a simple interface to writing HTTP services in Go
 
 It aims to be small and as simple as possible while exposing a pleasant API.
