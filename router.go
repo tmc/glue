@@ -69,11 +69,11 @@ func (r *router) Handle(w http.ResponseWriter, req *http.Request, c Context) {
 	var match mux.RouteMatch
 	var handler http.Handler
 	if matched := r.Match(req, &match); matched {
+		handler = match.Handler
 		if rhandler, ok := match.Handler.(routeHandler); ok {
 			rhandler.ctx = c
 			handler = rhandler
 		}
-		// @todo coersion could fail
 		registerVars(req, match.Vars)
 	}
 
