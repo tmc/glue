@@ -56,10 +56,10 @@ func (g *Glue) AddHandler(handler Handler) {
 }
 
 // Listen attempts to ListenAndServe based on the environment variables HOST and PORT
-func (g *Glue) Listen() {
+func (g *Glue) Listen() error {
 	port, host := os.Getenv("PORT"), os.Getenv("HOST")
 	if port == "" {
 		port = "5000"
 	}
-	http.ListenAndServe(host+":"+port, g)
+	return http.ListenAndServe(host+":"+port, g)
 }
